@@ -57,7 +57,7 @@ def getLogin():
     else:
         return -1
     
-def tweetThis(tweet):
+def tweetThis((htag, etweet)):
     keys = getPubPriv()
     login = getLogin()
     if keys == -1:
@@ -67,8 +67,9 @@ def tweetThis(tweet):
         print "You have not specified your twitter details, try ./%s -h" % (sys.argv[0])
         exit (-1)
     # All seems g2g
-    etweet = tweet[len(tweet.split(' ')[0]):]
-    htag = tweet[:len(tweet.split(' ')[0])]
+    #etweet = tweet[len(tweet.split(' ')[0]):]
+    #htag = tweet[:len(tweet.split(' ')[0])]
+    if htag[0:1] != "#": htag = "#%s" % htag
     print "Tweeting: %s [%s]" % (etweet, htag)
     enctweet = rsa.encrypt(etweet, keys["pub"])
     splits = int(math.ceil(len(enctweet) / 120.00))
@@ -88,6 +89,9 @@ def readTweet((tag, author, pubkey)):
     print "Retrieving tweets.."
     if (tag[0:1] == "#"): tag = tag[1:]
     a = get_twitter("http://search.twitter.com/search.atom?q=%s%%20%s" % (tag, author))
+    if len(a) == 0:
+        print "No tweets found with the tag %s for the user %s." % (tag, author)
+        exit(-1)
     posts = {}
     for b in a:
         count, data = b.split('[')[1].split(']')
@@ -97,7 +101,11 @@ def readTweet((tag, author, pubkey)):
     outputencr = ""
     for neworder in posts:
         outputencr = outputencr + neworder
-    decrypted = rsa.decrypt(outputencr.replace("\n", ""), key).strip()
+    try:
+        decrypted = rsa.decrypt(outputencr.replace("\n", ""), key).strip()
+    except OverflowError:
+        print "Overflow error: Wrong key?"
+        exit(-1)
     if decrypted[0:5].strip() == "FILE:":
         print "Tweet is a file, decrypting.."
         a = pickle.loads(binascii.a2b_base64(decrypted[5:]))
@@ -151,7 +159,6 @@ def fileThis((tag, filename)):
     api = twitter.Api(username=login[0], password=login[1])
     for i in range(0, len(tweets)):
         api.PostUpdate("%s %s" % ((header % (i+1)), tweets[i]))
-        #posttweets[i+1] = "%s %s" % ((header % (i+1)), tweets[i])
     print "Done!"
 
 
@@ -161,7 +168,7 @@ if __name__ == "__main__":
     parser = OptionParser(version="%prog 0.1")
     parser.add_option("-g", dest="genkey", help="Generate a private/public key for use", action="store_true")
     parser.add_option("-a", dest="twitter", help="Your twitter login specified as <user> <pass>", metavar="login", nargs=2)
-    parser.add_option("-t", dest="tweet", help="Post a tweet starting with the hashtag eg, \"#RSAToMyFriends Hi guys!\"", metavar="#tag tweet")
+    parser.add_option("-t", dest="tweet", help="Post a tweet starting with the hashtag eg, \"#RSAToMyFriends Hi guys!\"", metavar="#tag tweet", nargs=2)
     parser.add_option("-f", dest="tweetfile", help="Post a file encrypted as tweets eg, \"#tag <filename>\"", metavar="#tag filename.txt", nargs=2)
     parser.add_option("-r", dest="readtweet", help="Reads a tweet with the specified tag author pubkey", metavar="tag author pubkey", nargs=3)
     (options, args) = parser.parse_args()
@@ -170,3 +177,4 @@ if __name__ == "__main__":
     elif options.tweet: tweetThis(options.tweet)
     elif options.readtweet: readTweet(options.readtweet)
     elif options.tweetfile: fileThis(options.tweetfile)
+    else: parser.print_help()
