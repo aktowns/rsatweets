@@ -11,6 +11,7 @@ def get_twitter(url, limit=10):
     twitter_entries = []
     for entry in feedparser.parse(url)['entries'][:limit]:
         text = entry['title']
+        #print entry['author']
         text = re.sub(r'#(\w+)', "", text)
         twitter_entries.append(text)
     return twitter_entries
@@ -82,10 +83,11 @@ def tweetThis(tweet):
         #posttweets[i+1] = "%s %s" % ((header % (i+1)), tweets[i])
     print "Done!"
     
-def readTweet((tag, pubkey)):
+def readTweet((tag, author, pubkey)):
     key = getKey(pubkey)
     print "Retrieving tweets.."
-    a = get_twitter("http://search.twitter.com/search.atom?q=%s" % tag)
+    if (tag[0:1] == "#"): tag = tag[1:]
+    a = get_twitter("http://search.twitter.com/search.atom?q=%s%%20%s" % (tag, author))
     posts = {}
     for b in a:
         count, data = b.split('[')[1].split(']')
@@ -95,7 +97,9 @@ def readTweet((tag, pubkey)):
     outputencr = ""
     for neworder in posts:
         outputencr = outputencr + neworder
-    print rsa.decrypt(outputencr.replace("\n", ""), key).strip()
+    print "==========================="
+    print "@%s: %s" % (author, rsa.decrypt(outputencr.replace("\n", ""), key).strip())
+    print "==========================="
     print "Done!"
     
 def getKey(filepath):
@@ -116,7 +120,7 @@ if __name__ == "__main__":
     parser.add_option("-g", dest="genkey", help="Generate a private/public key for use", action="store_true")
     parser.add_option("-a", "--twitter", dest="twitter", help="Your twitter login specified as <user> <pass>", metavar="login", nargs=2)
     parser.add_option("-t", dest="tweet", help="Post a tweet starting with the hashtag eg, \"#RSAToMyFriends Hi guys!\"", metavar="#tag tweet")
-    parser.add_option("-r", dest="readtweet", help="Reads a tweet with the specified tag pubkey", metavar="tag pubkey", nargs=2)
+    parser.add_option("-r", dest="readtweet", help="Reads a tweet with the specified tag author pubkey", metavar="tag author pubkey", nargs=3)
     (options, args) = parser.parse_args()
     if options.genkey: genKey()
     elif options.twitter: twitterInfo(options.twitter)
