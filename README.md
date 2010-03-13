@@ -4,20 +4,20 @@
 
 
 Basically you create a new keypair with 
-./rsachat -g
+``./rsachat -g``
 
 enter your twitter login information with
-./rsachat -a User Pass
+``./rsachat -a User Pass``
 
 give your friends the file Private_key (dont ask.. -.-)
 and start tweeting with 
-./rsachat -t thiswasatriumph "Huge Success" 
+``./rsachat -t thiswasatriumph "Huge Success" ``
 
 and reading tweets like
-./rsachat -r thiswasatriumph someUser their_key
+``./rsachat -r thiswasatriumph someUser their_key``
 
 You can also now SEND FILES over twitter!
-./rsachat -f "#sometextFile" blah.txt
+``./rsachat -f "#sometextFile" blah.txt``
 
 ikebook:rsatweets ashleyis$ ./rsachat.py -h
 RSA Encrypted tweets by ikex <ashleyis@me.com>
@@ -28,8 +28,7 @@ Options:
   -h, --help            show this help message and exit
   -g                    Generate a private/public key for use
   -a login              Your twitter login specified as <user> <pass>
-  -t #tag tweet         Post a tweet starting with the hashtag eg,
-                        "#RSAToMyFriends Hi guys!"
+  -t #tag tweet         Post a tweet starting with the hashtag eg, "#RSAToMyFriends Hi guys!"
   -f #tag filename.txt  Post a file encrypted as tweets eg, "#tag <filename>"
   -r tag author pubkey  Reads a tweet with the specified tag author pubkey
 ikebook:rsatweets ashleyis$ 
