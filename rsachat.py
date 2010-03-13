@@ -4,7 +4,7 @@
 #   
 #
 #
-import rsa, pickle, os, math, twitter, datetime, feedparser, re, binascii, sys
+import rsa, pickle, os, math, twitter, datetime, feedparser, re, binascii, sys, urllib2
 from optparse import OptionParser
 
 def get_twitter(url, limit=10):
@@ -79,9 +79,13 @@ def tweetThis((htag, etweet)):
     header = "[%s/%s] %s" % ("%s", len(tweets), htag)
     #posttweets = {}
     api = twitter.Api(username=login[0], password=login[1])
-    for i in range(0, len(tweets)):
-        api.PostUpdate("%s %s" % ((header % (i+1)), tweets[i]))
-        #posttweets[i+1] = "%s %s" % ((header % (i+1)), tweets[i])
+    try:
+        for i in range(0, len(tweets)):
+            api.PostUpdate("%s %s" % ((header % (i+1)), tweets[i]))
+            #posttweets[i+1] = "%s %s" % ((header % (i+1)), tweets[i])
+    except urllib2.HTTPError:
+        print "Server suffered a random fuckup (its the feds man!) [Internal Server Error: 500] try again soon"
+        exit(-1)
     print "Done!"
     
 def readTweet((tag, author, pubkey)):
