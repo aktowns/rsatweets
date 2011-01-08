@@ -1,6 +1,6 @@
 *THIS IS REALLY BUGGY/HACKED TOGETHER*
 
-h1. Changelog
+## Changelog
 
 09/1/11 - Remote code could be executed via the rsa libraries decrypt method (using pickle). rsa has been upgraded to the mercurial head which doesnt use pickle. 
  Refactored the rsachat.py code to not use pickle either, this also means you will need to re-authenticate to twitter, and regenerte keys (sorry!) with the bonus
@@ -10,7 +10,7 @@ h1. Changelog
 
 
 
-h1. RSATweets in action!
+## RSATweets in action!
 
 ![Alt text](http://img696.imageshack.us/img696/7217/screenshot20100314at954.png "In action")
 
