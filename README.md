@@ -27,16 +27,3 @@ and start tweeting with
 and reading tweets like  
 ``./rsachat -r thiswasatriumph some_user their_key``  
   
-ikebook:rsatweets ashleyis$ ./rsachat.py -h  
-RSA Encrypted tweets by ikex <ashleyis@me.com>
-Usage: rsachat.py [options]
-
-Options:
-  --version             show program's version number and exit
-  -h, --help            show this help message and exit
-  -g                    Generate a private/public key for use
-  -o                    Authorize access to your Twitter account
-  -t #tag tweet         Post a tweet starting with the hashtag eg,
-                        "#RSAToMyFriends Hi guys!"
-  -r tag author pubkey  Reads a tweet with the specified tag author pubkey
-  
