@@ -21,16 +21,16 @@ You can also now SEND FILES over twitter!
 ``./rsachat -f "#sometextFile" blah.txt``  
   
 ikebook:rsatweets ashleyis$ ./rsachat.py -h  
-RSA Encrypted tweets by ikex <ashleyis@me.com>  
-Usage: rsachat.py [options]  
-  
-Options:  
-  	--version             show program's version number and exit  
-  	-h, --help            show this help message and exit  
-  	-g                    Generate a private/public key for use  
-  	-a login              Your twitter login specified as <user> <pass>  
-  	-t #tag tweet         Post a tweet starting with the hashtag eg, "#RSAToMyFriends Hi guys!"  
-  	-f #tag filename.txt  Post a file encrypted as tweets eg, "#tag <filename>"  
-  	-r tag author pubkey  Reads a tweet with the specified tag author pubkey  
-ikebook:rsatweets ashleyis$   
+RSA Encrypted tweets by ikex <ashleyis@me.com>
+Usage: rsachat.py [options]
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -g                    Generate a private/public key for use
+  -o                    Authorize access to your Twitter account
+  -t #tag tweet         Post a tweet starting with the hashtag eg,
+                        "#RSAToMyFriends Hi guys!"
+  -f #tag filename.txt  Post a file encrypted as tweets eg, "#tag <filename>"
+  -r tag author pubkey  Reads a tweet with the specified tag author pubkey
   
