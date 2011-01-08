@@ -4,7 +4,8 @@
 #   
 #
 #
-import rsa, pickle, os, math, twitter, datetime, feedparser, re, binascii, sys, urllib2
+import rsa, os, math, twitter, datetime, feedparser, re, binascii, sys, urllib2, base64, struct, yaml
+from yaml import Loader, Dumper
 from optparse import OptionParser
 
 def get_twitter(url, limit=10):
@@ -17,31 +18,29 @@ def get_twitter(url, limit=10):
     return twitter_entries
 
 def writeFile(content, file):
-    fp = open(file, "w")
-    pickle.dump(content, fp)
-    #fp.writelines(content)
+    fp = open(file, "wb")
+    fp.writelines(yaml.dump(content))
     fp.close()
 
 def genKey():
     print "Generating your keypair, this may take a while.."
-    keypair = rsa.gen_pubpriv_keys(1024)
+    keypair = rsa.newkeys(1024)
     writeFile(keypair[0], "public_key")
     writeFile(keypair[1], "private_key")
     print "Done!"
 
 def authorize():
 	result = get_access_token()
-	fp = open(".twittercredentials", "w")
-	pickle.dump(result, fp)
+	fp = open(".twittercredentials", "wb")
+	fp.writelines(yaml.dump(result))
 	fp.close()
 	
 def getPubPriv():
     if (os.path.isfile("public_key") and os.path.isfile("private_key")):
-        fp = open("public_key", "r")
-        pubkey = pickle.load(fp)
-        fp.close()
-        fp = open("private_key", "r")
-        privkey = pickle.load(fp)
+        fp = open("public_key", "rb")
+        pubkey = yaml.load(fp)
+        fp = open("private_key", "rb")
+        privkey = yaml.load(fp)
         fp.close()
         return {'priv': privkey, 'pub': pubkey}
     else:
@@ -50,7 +49,7 @@ def getPubPriv():
 def getLogin():
     if (os.path.isfile(".twittercredentials")):
         fp = open(".twittercredentials", "r")
-        a = pickle.load(fp)
+        a = yaml.load(fp)
         fp.close()
         return a
     else:
@@ -68,7 +67,7 @@ def tweetThis((htag, etweet)):
     # All seems g2g
     if htag[0:1] != "#": htag = "#%s" % htag
     print "Tweeting: %s [%s]" % (etweet, htag)
-    enctweet = rsa.encrypt(etweet, keys["pub"])
+    enctweet = rsa.encrypt(str(etweet), keys["pub"])
     splits = int(math.ceil(len(enctweet) / 120.00))
     tweets = {}
     for i in range(0,splits):
@@ -105,28 +104,28 @@ def readTweet((tag, author, pubkey)):
     for neworder in posts:
         outputencr = outputencr + neworder
     try:
-        decrypted = rsa.decrypt(outputencr.replace("\n", ""), key).strip()
+        decrypted = rsa.decrypt(str(outputencr.replace("\n", "")), key).strip()
     except OverflowError:
         print "Overflow error: Wrong key?"
         exit(-1)
-    if decrypted[0:5].strip() == "FILE:":
-        print "Tweet is a file, decrypting.."
-        a = pickle.loads(binascii.a2b_base64(decrypted[5:]))
-        filename = a['filename'].replace("/", "")
-        fp = open(filename, "w")
-        fp.write(binascii.a2b_base64(a['data']))
-        print "Saved: %s" % a['filename']
-    else:
-        print "==========================="
-        print "@%s: %s" % (author, decrypted)
-        print "==========================="
+    #if decrypted[0:5].strip() == "FILE:":
+    #    print "Tweet is a file, decrypting.."
+    #    a = pickle.loads(binascii.a2b_base64(decrypted[5:]))
+    #    filename = a['filename'].replace("/", "")
+    #    fp = open(filename, "w")
+    #    fp.write(binascii.a2b_base64(a['data']))
+    #    print "Saved: %s" % a['filename']
+    #else:
+    print "==========================="
+    print "@%s: %s" % (author, decrypted)
+    print "==========================="
     print "Done!"
     
 def getKey(filepath):
-    fp = open(filepath)
-    a = pickle.load(fp)
+    fp = open(filepath, "rb")
+    privkey = yaml.load(fp)
     fp.close()
-    return a
+    return privkey
 
 def sortedDictValues1(adict):
     items = adict.items()
@@ -245,7 +244,7 @@ if __name__ == "__main__":
 	parser.add_option("-g", dest="genkey", help="Generate a private/public key for use", action="store_true")
 	parser.add_option("-o", dest="oauth", help="Authorize access to your Twitter account", action="store_true")
 	parser.add_option("-t", dest="tweet", help="Post a tweet starting with the hashtag eg, \"#RSAToMyFriends Hi guys!\"", metavar="#tag tweet", nargs=2)
-	parser.add_option("-f", dest="tweetfile", help="Post a file encrypted as tweets eg, \"#tag <filename>\"", metavar="#tag filename.txt", nargs=2)
+	#parser.add_option("-f", dest="tweetfile", help="Post a file encrypted as tweets eg, \"#tag <filename>\"", metavar="#tag filename.txt", nargs=2)
 	parser.add_option("-r", dest="readtweet", help="Reads a tweet with the specified tag author pubkey", metavar="tag author pubkey", nargs=3)
 	(options, args) = parser.parse_args()
 	if options.genkey: genKey()

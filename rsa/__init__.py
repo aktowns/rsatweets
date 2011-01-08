@@ -154,7 +154,8 @@ def str642int(string):
     >>> str642int('7MyqL')
     123456789
     """
-
+    #if type(string) is types.UnicodeType:
+    #  string = str(string)
     if not (type(string) is types.ListType or type(string) is types.StringType):
         raise TypeError("You must pass a string or a list")
 
