@@ -1,0 +1,5 @@
+.DS_STORE
+*.pyc
+private_key
+public_key
+.twittercredentials
