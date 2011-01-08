@@ -3,8 +3,8 @@
 Changelog
 
 09/1/11 - Remote code could be executed via the rsa libraries decrypt method (using pickle). rsa has been upgraded to the mercurial head which doesnt use pickle. 
-          Refactored the rsachat.py code to not use pickle either, this also means you will need to re-authenticate to twitter, and regenerte keys (sorry!) with the bonus
-          that you're now safe from pickle related vulnerabilities (now using yaml, which is alot safer) thanks [@dbph](https://twitter.com/dbph)
+ Refactored the rsachat.py code to not use pickle either, this also means you will need to re-authenticate to twitter, and regenerte keys (sorry!) with the bonus
+ that you're now safe from pickle related vulnerabilities (now using yaml, which is alot safer) thanks [@dbph](https://twitter.com/dbph)
 08/1/11 - Updated with twitter OAUTH login support(and latest supporting libraries as of 8/1/11), thanks to [@mpesce](http://twitter.com/mpesce)
 
 
