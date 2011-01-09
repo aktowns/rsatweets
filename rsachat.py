@@ -38,9 +38,9 @@ def authorize():
 def getPubPriv():
     if (os.path.isfile("public_key") and os.path.isfile("private_key")):
         fp = open("public_key", "rb")
-        pubkey = yaml.load(fp)
+        pubkey = yaml.safe_load(fp)
         fp = open("private_key", "rb")
-        privkey = yaml.load(fp)
+        privkey = yaml.safe_load(fp)
         fp.close()
         return {'priv': privkey, 'pub': pubkey}
     else:
@@ -49,7 +49,7 @@ def getPubPriv():
 def getLogin():
     if (os.path.isfile(".twittercredentials")):
         fp = open(".twittercredentials", "r")
-        a = yaml.load(fp)
+        a = yaml.safe_load(fp)
         fp.close()
         return a
     else:
@@ -126,7 +126,7 @@ def readTweet((tag, author, pubkey)):
     
 def getKey(filepath):
     fp = open(filepath, "rb")
-    privkey = yaml.load(fp)
+    privkey = yaml.safe_load(fp)
     fp.close()
     return privkey
 
