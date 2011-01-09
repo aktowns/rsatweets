@@ -96,8 +96,11 @@ def readTweet((tag, author, pubkey)):
         exit(-1)
     posts = {}
     for b in a:
-        count, data = b.split('[')[1].split(']')
-        posts[count.split('/')[0]] = data.strip()
+        if b.find('[') != -1 and b.find(']') != -1:
+          count, data = b.split('[')[1].split(']')
+          posts[count.split('/')[0]] = data.strip()
+        else:
+          print "Was unable to find a position placeholder('[XX/YY]') for the selected tweet."
     posts = sortedDictValues1(posts)
     print "Decrypting.."
     outputencr = ""
