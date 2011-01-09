@@ -251,6 +251,6 @@ if __name__ == "__main__":
 	elif options.oauth: authorize()
 	elif options.tweet: tweetThis(options.tweet)
 	elif options.readtweet: readTweet(options.readtweet)
-	elif options.tweetfile: fileThis(options.tweetfile)
+	#elif options.tweetfile: fileThis(options.tweetfile)
 	else: parser.print_help()
 		
